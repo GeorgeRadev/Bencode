@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="Bencode" default="all" basedir=".">
+	<property name="src.dir" value="${basedir}/src/main/java" />
+	<property name="src.test.dir" value="${basedir}/src/test/java" />
+	<property name="build.dir" value="${basedir}/out" />
+	<property name="build.test.dir" value="${basedir}/out_test" />
+	<property name="build.jar" value="${basedir}/Bencode.jar" />
+
+	<target name="help">
+		<echo message="use: ant [one of the following]" />
+		<echo message="clean     - removes any artifacts generated" />
+		<echo message="compile   - process all java files" />
+		<echo message="build     = compile" />
+		<echo message="test      - compile and unit test" />
+		<echo message="jar       - generate JAR library file" />
+		<echo message="all       - compile all, run tests, and creates WAR file" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" failonerror="false" />
+		<delete file="${build.jar}" />
+	</target>
+
+	<target name="init">
+	</target>
+
+	<target name="compile" depends="init">
+		<mkdir dir="${build.dir}" />
+
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" optimize="true" target="1.4" source="1.4" nowarn="false" fork="true" memoryInitialSize="128m" memoryMaximumSize="128m" includeantruntime="true" encoding="UTF-8">
+		</javac>
+
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}" />
+		</copy>
+	</target>
+
+	<target name="build" depends="compile">
+	</target>
+
+
+
+	<target name="test" depends="build">
+		<mkdir dir="${build.test.dir}" />
+
+		<javac srcdir="${src.test.dir}" debug="true" optimize="true" target="1.4" source="1.4" nowarn="false" fork="true" memoryInitialSize="128m" memoryMaximumSize="128m" includeantruntime="true" encoding="UTF-8">
+			<classpath>
+				<pathelement path="${build.dir}" />
+				<pathelement path="junit.jar" />
+			</classpath>
+		</javac>
+
+		<copy todir="${build.test.dir}">
+			<fileset dir="${src.test.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- run junit tests -->
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement path="${build.test.dir}" />
+				<pathelement path="${build.dir}" />
+				<pathelement path="junit.jar" />
+			</classpath>
+
+			<formatter type="plain" />
+
+			<batchtest fork="yes" todir="${build.test.dir}">
+				<fileset dir="${src.test.dir}">
+					<include name="**/*Test*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+	</target>
+
+	<target name="jar" depends="build">
+		<delete file="${build.jar}" />
+
+		<jar destfile="${build.jar}">
+			<fileset dir="${build.dir}" />
+		</jar>
+	</target>
+
+	<target name="all" depends="jar" />
+
+</project>
