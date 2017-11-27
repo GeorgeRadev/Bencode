@@ -1,15 +1,15 @@
 package bencode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
- * utility class for reading non generic Object paths. like XPath for XML.
+ * utility class for reading generic Object paths. like XPath for XML.
  */
 public class BencodePath {
+	protected BencodePath() {
+	}
 
 	public static Object getObject(Object obj, String _path) throws Exception {
 		Object trace = obj;
